@@ -26,7 +26,10 @@ import {
   ShieldCheck, 
   Printer, 
   ExternalLink,
-  Utensils 
+  Utensils,
+  Truck,
+  Home,
+  Banknote 
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import Button from './components/ui/Button';
@@ -83,8 +86,13 @@ export default function App() {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
-  const [pickupTime, setPickupTime] = useState('ASAP (Approx 25–35 mins)');
+  const [pickupTime, setPickupTime] = useState('ASAP (Ready in 20–30 mins)');
+  const [deliveryTime, setDeliveryTime] = useState('ASAP (Estimated 35–50 mins)');
   const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [deliveryApt, setDeliveryApt] = useState('');
+  const [deliveryZip, setDeliveryZip] = useState('Nottingham (21236)');
+  const [deliveryNotes, setDeliveryNotes] = useState('');
+  const [driverTip, setDriverTip] = useState(3.00);
   const [orderNotes, setOrderNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [confirmedOrder, setConfirmedOrder] = useState(null);
@@ -118,7 +126,8 @@ export default function App() {
   const taxableAmount = Math.max(0, subtotal - discountAmount);
   const salesTax = taxableAmount * 0.06;
   const deliveryFee = orderType === 'delivery' ? 4.99 : 0;
-  const grandTotal = taxableAmount + salesTax + deliveryFee;
+  const tipAmount = orderType === 'delivery' ? driverTip : 0;
+  const grandTotal = taxableAmount + salesTax + deliveryFee + tipAmount;
 
   // Filter products for featured reel
   const featuredItems = menuData.items.filter((i) => i.isSignature);
@@ -271,8 +280,12 @@ export default function App() {
       customerPhone,
       customerEmail,
       orderType,
-      pickupTime,
+      fulfillmentTime: orderType === 'delivery' ? deliveryTime : pickupTime,
       deliveryAddress,
+      deliveryApt,
+      deliveryZip,
+      deliveryNotes,
+      driverTip: orderType === 'delivery' ? driverTip : 0,
       orderNotes,
       paymentMethod,
       items: [...cart],
@@ -1393,24 +1406,45 @@ export default function App() {
                 <div className="grid grid-cols-2 p-1 bg-card rounded-xl border border-border text-xs font-bold">
                   <button
                     type="button"
-                    onClick={() => setOrderType('pickup')}
-                    className={`py-2 rounded-lg transition-all ${orderType === 'pickup' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground'}`}
+                    onClick={() => {
+                      setOrderType('pickup');
+                      if (paymentMethod === 'cod') setPaymentMethod('counter');
+                    }}
+                    className={`py-2 rounded-lg transition-all ${orderType === 'pickup' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                   >
                     Curbside Pickup (Free)
                   </button>
                   <button
                     type="button"
-                    onClick={() => setOrderType('delivery')}
-                    className={`py-2 rounded-lg transition-all ${orderType === 'delivery' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground'}`}
+                    onClick={() => {
+                      setOrderType('delivery');
+                      if (paymentMethod === 'counter') setPaymentMethod('card');
+                    }}
+                    className={`py-2 rounded-lg transition-all ${orderType === 'delivery' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                   >
                     Delivery ($4.99)
                   </button>
                 </div>
                 <div className="flex justify-between items-center text-xs text-muted-foreground mt-2 px-1">
-                  <span className="flex items-center gap-1 font-medium">
-                    <Clock className="size-3.5 text-accent" /> Estimated: <strong className="text-foreground">25–35 mins</strong>
-                  </span>
-                  <span>8833 Belair Rd</span>
+                  {orderType === 'pickup' ? (
+                    <>
+                      <span className="flex items-center gap-1 font-medium">
+                        <Clock className="size-3.5 text-accent" /> Ready in: <strong className="text-foreground">20–30 mins</strong>
+                      </span>
+                      <span className="flex items-center gap-1 text-[11px] font-semibold text-primary">
+                        <MapPin className="size-3" /> 8833 Belair Rd (Pickup)
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="flex items-center gap-1 font-medium">
+                        <Clock className="size-3.5 text-accent" /> Estimated: <strong className="text-foreground">35–50 mins</strong>
+                      </span>
+                      <span className="flex items-center gap-1 text-[11px] text-emerald-700 font-semibold">
+                        <Truck className="size-3" /> To Your Door
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -1502,10 +1536,18 @@ export default function App() {
                       <span className="font-semibold text-foreground">${salesTax.toFixed(2)}</span>
                     </div>
                     {orderType === 'delivery' && (
-                      <div className="flex justify-between">
-                        <span>Delivery Fee</span>
-                        <span className="font-semibold text-foreground">${deliveryFee.toFixed(2)}</span>
-                      </div>
+                      <>
+                        <div className="flex justify-between">
+                          <span>Delivery Fee (Nottingham Area)</span>
+                          <span className="font-semibold text-foreground">${deliveryFee.toFixed(2)}</span>
+                        </div>
+                        {driverTip > 0 && (
+                          <div className="flex justify-between">
+                            <span>Driver Tip</span>
+                            <span className="font-semibold text-foreground">${driverTip.toFixed(2)}</span>
+                          </div>
+                        )}
+                      </>
                     )}
                     <div className="flex justify-between text-base font-bold text-foreground pt-1.5 border-t border-border">
                       <span>Total Due</span>
@@ -1537,9 +1579,13 @@ export default function App() {
             <div className="bg-primary text-white p-6 flex items-center justify-between">
               <div>
                 <h3 className="font-display text-xl font-bold">
-                  {checkoutStep === 'confirmed' ? 'Order Confirmed!' : 'Checkout & Order Summary'}
+                  {checkoutStep === 'confirmed' 
+                    ? (confirmedOrder?.orderType === 'delivery' ? 'Delivery Order Confirmed!' : 'Pickup Order Confirmed!')
+                    : (orderType === 'delivery' ? 'Local Delivery Checkout' : 'Curbside Pickup Checkout')}
                 </h3>
-                <p className="text-xs text-white/80">Massoni's Italian Restaurant • (410) 970-3700</p>
+                <p className="text-xs text-white/80">
+                  {orderType === 'delivery' ? 'Delivered hot to your door in Nottingham & Perry Hall' : 'Massoni\'s Trattoria • 8833 Belair Rd'}
+                </p>
               </div>
               {checkoutStep !== 'confirmed' && (
                 <button onClick={() => setCheckoutOpen(false)} className="p-2 rounded-full hover:bg-white/10 text-white/80">
@@ -1557,11 +1603,15 @@ export default function App() {
                     onClick={() => setCheckoutStep('details')}
                     className={`flex-1 py-3 text-center border-b-2 transition-all ${checkoutStep === 'details' ? 'border-primary text-primary bg-card' : 'border-transparent text-muted-foreground'}`}
                   >
-                    1. Customer &amp; Pickup
+                    {orderType === 'delivery' ? '1. Delivery Details' : '1. Pickup Details'}
                   </button>
                   <button
                     type="button"
-                    onClick={() => { if (customerName && customerPhone) setCheckoutStep('payment'); }}
+                    onClick={() => { 
+                      if (customerName && customerPhone && (orderType === 'pickup' || deliveryAddress.trim())) {
+                        setCheckoutStep('payment'); 
+                      }
+                    }}
                     className={`flex-1 py-3 text-center border-b-2 transition-all ${checkoutStep === 'payment' ? 'border-primary text-primary bg-card' : 'border-transparent text-muted-foreground'}`}
                   >
                     2. Payment &amp; Submit
@@ -1570,35 +1620,76 @@ export default function App() {
 
                 <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
                   {checkoutStep === 'details' ? (
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                          Full Name <span className="text-primary">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={customerName}
-                          onChange={(e) => setCustomerName(e.target.value)}
-                          placeholder="e.g. Maria Rossi"
-                          className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
-                        />
+                    <div className="space-y-4">
+                      
+                      {/* Fulfillment Switcher in Checkout */}
+                      <div className="p-1 bg-muted/60 rounded-xl border border-border grid grid-cols-2 text-xs font-bold">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOrderType('pickup');
+                            if (paymentMethod === 'cod') setPaymentMethod('counter');
+                          }}
+                          className={`py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                            orderType === 'pickup' 
+                              ? 'bg-primary text-white shadow-sm' 
+                              : 'text-muted-foreground hover:text-foreground'
+                          }`}
+                        >
+                          <MapPin className="size-3.5" />
+                          <span>Curbside Pickup (Free)</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOrderType('delivery');
+                            if (paymentMethod === 'counter') setPaymentMethod('card');
+                          }}
+                          className={`py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                            orderType === 'delivery' 
+                              ? 'bg-primary text-white shadow-sm' 
+                              : 'text-muted-foreground hover:text-foreground'
+                          }`}
+                        >
+                          <Truck className="size-3.5" />
+                          <span>Doorstep Delivery ($4.99)</span>
+                        </button>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                            Phone Number <span className="text-primary">*</span>
-                          </label>
-                          <input
-                            type="tel"
-                            required
-                            value={customerPhone}
-                            onChange={(e) => setCustomerPhone(e.target.value)}
-                            placeholder="(410) 555-0199"
-                            className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
-                          />
+                      {/* Contact Info */}
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                              Full Name <span className="text-primary">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={customerName}
+                              onChange={(e) => setCustomerName(e.target.value)}
+                              placeholder="e.g. Maria Rossi"
+                              className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                              Phone Number <span className="text-primary">*</span>
+                            </label>
+                            <input
+                              type="tel"
+                              required
+                              value={customerPhone}
+                              onChange={(e) => setCustomerPhone(e.target.value)}
+                              placeholder="(410) 555-0199"
+                              className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
+                            />
+                            <span className="text-[10px] text-muted-foreground">
+                              {orderType === 'delivery' ? 'Used for driver text/arrival notice' : 'Used for pickup ready notification'}
+                            </span>
+                          </div>
                         </div>
+
                         <div>
                           <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
                             Email Address
@@ -1613,47 +1704,164 @@ export default function App() {
                         </div>
                       </div>
 
-                      <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                          Pickup Time Slot
-                        </label>
-                        <select
-                          value={pickupTime}
-                          onChange={(e) => setPickupTime(e.target.value)}
-                          className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
-                        >
-                          <option value="ASAP (Approx 25–35 mins)">ASAP (Approx 25–35 mins)</option>
-                          <option value="Today at 5:00 PM">Today at 5:00 PM</option>
-                          <option value="Today at 6:00 PM">Today at 6:00 PM</option>
-                          <option value="Today at 7:00 PM">Today at 7:00 PM</option>
-                          <option value="Today at 8:00 PM">Today at 8:00 PM</option>
-                        </select>
-                      </div>
+                      {/* PICKUP SPECIFIC SECTION */}
+                      {orderType === 'pickup' && (
+                        <div className="p-3.5 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
+                          <div className="flex items-start gap-2.5">
+                            <MapPin className="size-5 text-primary shrink-0 mt-0.5" />
+                            <div>
+                              <span className="font-bold text-xs text-foreground block">Pickup Location</span>
+                              <p className="text-xs font-semibold text-primary">8833 Belair Rd, Nottingham, MD 21236</p>
+                              <p className="text-[11px] text-muted-foreground mt-0.5">
+                                Designated curbside bays in front of the restaurant. We'll bring your order out or you can pick up at the bar.
+                              </p>
+                            </div>
+                          </div>
 
-                      {orderType === 'delivery' && (
-                        <div>
-                          <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                            Delivery Address in Nottingham Area
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={deliveryAddress}
-                            onChange={(e) => setDeliveryAddress(e.target.value)}
-                            placeholder="Street address, Apt, Zip code"
-                            className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
-                          />
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                              Pickup Time Preference
+                            </label>
+                            <select
+                              value={pickupTime}
+                              onChange={(e) => setPickupTime(e.target.value)}
+                              className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
+                            >
+                              <option value="ASAP (Ready in 20–30 mins)">ASAP (Ready in 20–30 mins)</option>
+                              <option value="Today at 5:00 PM">Today at 5:00 PM</option>
+                              <option value="Today at 5:30 PM">Today at 5:30 PM</option>
+                              <option value="Today at 6:00 PM">Today at 6:00 PM</option>
+                              <option value="Today at 6:30 PM">Today at 6:30 PM</option>
+                              <option value="Today at 7:00 PM">Today at 7:00 PM</option>
+                              <option value="Today at 7:30 PM">Today at 7:30 PM</option>
+                              <option value="Today at 8:00 PM">Today at 8:00 PM</option>
+                            </select>
+                          </div>
                         </div>
                       )}
 
+                      {/* DELIVERY SPECIFIC SECTION */}
+                      {orderType === 'delivery' && (
+                        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 space-y-3">
+                          <div className="flex items-center gap-2 text-xs font-bold text-amber-900">
+                            <Truck className="size-4 text-amber-700" />
+                            <span>Local Doorstep Delivery Information</span>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                              Street Address <span className="text-primary">*</span>
+                            </label>
+                            <div className="relative">
+                              <Home className="size-4 absolute left-3 top-3 text-muted-foreground" />
+                              <input
+                                type="text"
+                                required
+                                value={deliveryAddress}
+                                onChange={(e) => setDeliveryAddress(e.target.value)}
+                                placeholder="e.g. 8920 Belair Rd"
+                                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                                Apt / Suite / Gate Code
+                              </label>
+                              <input
+                                type="text"
+                                value={deliveryApt}
+                                onChange={(e) => setDeliveryApt(e.target.value)}
+                                placeholder="Apt 3B, Gate #1234"
+                                className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                                Delivery Area / Zip Code
+                              </label>
+                              <select
+                                value={deliveryZip}
+                                onChange={(e) => setDeliveryZip(e.target.value)}
+                                className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
+                              >
+                                <option value="Nottingham (21236)">Nottingham (21236)</option>
+                                <option value="Perry Hall (21128)">Perry Hall (21128)</option>
+                                <option value="Parkville (21234)">Parkville (21234)</option>
+                                <option value="White Marsh (21162)">White Marsh (21162)</option>
+                                <option value="Rosedale (21237)">Rosedale (21237)</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                              Delivery Time Window
+                            </label>
+                            <select
+                              value={deliveryTime}
+                              onChange={(e) => setDeliveryTime(e.target.value)}
+                              className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
+                            >
+                              <option value="ASAP (Estimated 35–50 mins)">ASAP (Estimated 35–50 mins)</option>
+                              <option value="Today at 5:30 PM – 6:00 PM">Today at 5:30 PM – 6:00 PM</option>
+                              <option value="Today at 6:00 PM – 6:30 PM">Today at 6:00 PM – 6:30 PM</option>
+                              <option value="Today at 6:30 PM – 7:00 PM">Today at 6:30 PM – 7:00 PM</option>
+                              <option value="Today at 7:00 PM – 7:30 PM">Today at 7:00 PM – 7:30 PM</option>
+                              <option value="Today at 7:30 PM – 8:00 PM">Today at 7:30 PM – 8:00 PM</option>
+                              <option value="Today at 8:00 PM – 8:30 PM">Today at 8:00 PM – 8:30 PM</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                              Drop-off Instructions for Driver
+                            </label>
+                            <textarea
+                              value={deliveryNotes}
+                              onChange={(e) => setDeliveryNotes(e.target.value)}
+                              placeholder="e.g. Ring doorbell, leave on front porch chair, call when arriving..."
+                              rows={2}
+                              className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
+                            />
+                          </div>
+
+                          {/* Driver Tip Selection */}
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1.5">
+                              Driver Tip (100% goes to driver)
+                            </label>
+                            <div className="grid grid-cols-4 gap-1.5">
+                              {[0, 3, 5, 7].map((tip) => (
+                                <button
+                                  key={tip}
+                                  type="button"
+                                  onClick={() => setDriverTip(tip)}
+                                  className={`py-1.5 px-2 rounded-lg border text-xs font-bold transition-all ${
+                                    driverTip === tip 
+                                      ? 'border-primary bg-primary text-white shadow-xs' 
+                                      : 'border-border bg-background text-foreground hover:bg-muted'
+                                  }`}
+                                >
+                                  {tip === 0 ? 'No Tip' : `$${tip}.00`}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* General Kitchen Notes */}
                       <div>
                         <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                          Kitchen Packaging Notes
+                          Kitchen Packaging / Allergy Notes
                         </label>
                         <textarea
                           value={orderNotes}
                           onChange={(e) => setOrderNotes(e.target.value)}
-                          placeholder="e.g. Extra napkins, call upon arrival..."
+                          placeholder="e.g. Extra parmesan, utensils, allergy alerts..."
                           rows={2}
                           className="w-full p-2.5 rounded-xl border border-input text-xs bg-background focus:border-primary focus:outline-none"
                         />
@@ -1661,9 +1869,30 @@ export default function App() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <div className="p-3.5 bg-muted/40 rounded-xl text-xs space-y-1">
-                        <span className="font-bold text-foreground block">Order Total: ${grandTotal.toFixed(2)}</span>
-                        <p className="text-muted-foreground">{cart.length} items for {customerName} ({customerPhone})</p>
+                      {/* Summary Banner */}
+                      <div className="p-3.5 bg-muted/40 rounded-xl text-xs space-y-1.5">
+                        <div className="flex justify-between items-center">
+                          <span className="font-bold text-foreground">Total Due:</span>
+                          <span className="font-display text-primary text-base font-bold">${grandTotal.toFixed(2)}</span>
+                        </div>
+                        <p className="text-muted-foreground font-medium">
+                          {cartItemCount} items for {customerName} ({customerPhone})
+                        </p>
+                        {orderType === 'delivery' ? (
+                          <div className="pt-1.5 border-t border-border/60 flex items-start gap-1.5 text-xs text-foreground">
+                            <Truck className="size-3.5 text-amber-600 shrink-0 mt-0.5" />
+                            <span>
+                              Delivering to: <strong>{deliveryAddress || 'Address on file'}{deliveryApt ? `, ${deliveryApt}` : ''} ({deliveryZip})</strong> • {deliveryTime}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="pt-1.5 border-t border-border/60 flex items-start gap-1.5 text-xs text-foreground">
+                            <MapPin className="size-3.5 text-primary shrink-0 mt-0.5" />
+                            <span>
+                              Curbside Pickup at: <strong>8833 Belair Rd, Nottingham MD</strong> • {pickupTime}
+                            </span>
+                          </div>
+                        )}
                       </div>
 
                       <div>
@@ -1687,14 +1916,25 @@ export default function App() {
                             <span className="block text-sm"> / G Pay</span>
                             Digital Wallet
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => setPaymentMethod('counter')}
-                            className={`p-2.5 rounded-xl border text-xs font-bold text-center transition-all ${paymentMethod === 'counter' ? 'border-primary bg-primary/10 text-primary' : 'border-border'}`}
-                          >
-                            <MapPin className="size-4 mx-auto mb-1" />
-                            Pay at Pickup
-                          </button>
+                          {orderType === 'delivery' ? (
+                            <button
+                              type="button"
+                              onClick={() => setPaymentMethod('cod')}
+                              className={`p-2.5 rounded-xl border text-xs font-bold text-center transition-all ${paymentMethod === 'cod' ? 'border-primary bg-primary/10 text-primary' : 'border-border'}`}
+                            >
+                              <Banknote className="size-4 mx-auto mb-1" />
+                              Cash on Delivery
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setPaymentMethod('counter')}
+                              className={`p-2.5 rounded-xl border text-xs font-bold text-center transition-all ${paymentMethod === 'counter' ? 'border-primary bg-primary/10 text-primary' : 'border-border'}`}
+                            >
+                              <MapPin className="size-4 mx-auto mb-1" />
+                              Pay at Pickup
+                            </button>
+                          )}
                         </div>
                       </div>
 
@@ -1757,22 +1997,66 @@ export default function App() {
                   </span>
                   <h3 className="font-display text-2xl font-bold">Grazie, {confirmedOrder?.customerName}!</h3>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Your order has been transmitted directly to the kitchen at Massoni's.
+                    {confirmedOrder?.orderType === 'delivery'
+                      ? 'Your delivery order has been received by Massoni\'s kitchen and a driver will be dispatched.'
+                      : 'Your curbside order has been transmitted directly to the kitchen at Massoni\'s.'}
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-muted/40 text-left text-xs space-y-1.5 border border-border">
+                <div className="p-4 rounded-xl bg-muted/40 text-left text-xs space-y-2 border border-border">
                   <div className="flex justify-between font-bold">
-                    <span>Estimated Pickup:</span>
-                    <span className="text-primary">{confirmedOrder?.pickupTime}</span>
+                    <span>{confirmedOrder?.orderType === 'delivery' ? 'Estimated Delivery Window:' : 'Estimated Ready Time:'}</span>
+                    <span className="text-primary">{confirmedOrder?.fulfillmentTime}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Location:</span>
-                    <span>8833 Belair Rd, Nottingham MD</span>
+
+                  {confirmedOrder?.orderType === 'delivery' ? (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Delivery Destination:</span>
+                        <span className="font-semibold text-right max-w-[60%] truncate">
+                          {confirmedOrder?.deliveryAddress}{confirmedOrder?.deliveryApt ? `, ${confirmedOrder.deliveryApt}` : ''} ({confirmedOrder?.deliveryZip})
+                        </span>
+                      </div>
+                      {confirmedOrder?.deliveryNotes && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Driver Note:</span>
+                          <span className="italic text-right max-w-[60%]">"{confirmedOrder.deliveryNotes}"</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Driver Updates:</span>
+                        <span>Sent via SMS to {confirmedOrder?.customerPhone}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Pickup Counter:</span>
+                        <span>8833 Belair Rd, Nottingham MD</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Curbside Bay:</span>
+                        <span>Dedicated spots in front • Call (410) 970-3700</span>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="flex justify-between pt-1 border-t border-border">
+                    <span className="text-muted-foreground">Payment Method:</span>
+                    <span className="font-semibold">
+                      {confirmedOrder?.paymentMethod === 'cod' 
+                        ? 'Cash upon Delivery' 
+                        : confirmedOrder?.paymentMethod === 'counter' 
+                        ? 'Pay at Pickup Counter' 
+                        : confirmedOrder?.paymentMethod === 'applepay'
+                        ? 'Digital Wallet ( / G Pay)'
+                        : 'Credit Card (Paid Online)'}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Total Paid:</span>
-                    <span className="font-bold text-foreground font-mono">${confirmedOrder?.grandTotal.toFixed(2)}</span>
+
+                  <div className="flex justify-between text-sm font-bold pt-1 border-t border-border">
+                    <span>Total {confirmedOrder?.paymentMethod === 'cod' || confirmedOrder?.paymentMethod === 'counter' ? 'Due' : 'Paid'}:</span>
+                    <span className="font-display text-primary">${confirmedOrder?.grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
 
