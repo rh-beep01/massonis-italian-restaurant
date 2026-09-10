@@ -1,236 +1,126 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "../src";
+@source "./src";
+@source "../index.html";
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
 
 :root {
-  /* Tuscan Wine Brand Colors */
-  --wine-900: #460E16;
-  --wine-800: #621420;
-  --wine-700: #7A1C29;
-  --wine-600: #932332;
-  --wine-500: #AB2D3E;
-  --wine-100: #FDF0F2;
-  --wine-50: #FFF8F9;
-
-  /* Basil Herb Greens */
-  --basil-800: #1E3D1B;
-  --basil-700: #264E24;
-  --basil-600: #2D5A27;
-  --basil-500: #3D7836;
-  --basil-100: #EBF5EB;
-  --basil-50: #F5FAF5;
-
-  /* Warm Parchment & Linen Backgrounds */
-  --parchment-50: #FDFAF5;
-  --parchment-100: #F8F3EA;
-  --parchment-200: #EFE7DA;
-  --parchment-300: #DFD5C4;
-
-  /* Artisan Gold Accents */
-  --gold-600: #B8860B;
-  --gold-500: #D4A373;
-  --gold-400: #E5B888;
-  --gold-100: #FAF3E8;
-
-  /* Contrast Charcoals */
-  --charcoal-900: #151312;
-  --charcoal-800: #221E1C;
-  --charcoal-700: #36312E;
-  --charcoal-600: #57504A;
-  --charcoal-500: #7D746D;
-  --charcoal-400: #A89F97;
-  --charcoal-200: #D8D2CB;
-
-  /* Typography */
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(34, 30, 28, 0.06);
-  --shadow-md: 0 6px 20px rgba(34, 30, 28, 0.08);
-  --shadow-lg: 0 12px 36px rgba(34, 30, 28, 0.12);
-  --shadow-xl: 0 20px 50px rgba(34, 30, 28, 0.18);
-  --shadow-wine: 0 10px 25px rgba(122, 28, 41, 0.22);
+  --radius: 0.75rem;
+  --background: #FBF8F3;
+  --foreground: #1C1917;
+  --card: #FFFFFF;
+  --card-foreground: #1C1917;
+  --popover: #FFFFFF;
+  --popover-foreground: #1C1917;
+  --primary: #7A1C29;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F4ECE1;
+  --secondary-foreground: #4A0E17;
+  --muted: #F2EBE0;
+  --muted-foreground: #6E665E;
+  --accent: #C28522;
+  --accent-foreground: #1C1917;
+  --border: #E5DDD0;
+  --input: #E5DDD0;
+  --ring: #7A1C29;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  * {
+    border-color: var(--color-border);
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-width: 100%;
+    overflow-x: hidden;
+  }
+
+  #root {
+    width: 100%;
+    min-width: 100%;
+    min-height: 100vh;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-  font-family: var(--font-sans);
-  background-color: var(--parchment-50);
-  color: var(--charcoal-800);
-}
-
-body {
-  overflow-x: hidden;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Typography styles */
-h1, h2, h3, h4, .font-serif {
-  font-family: var(--font-serif);
-  letter-spacing: -0.01em;
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--parchment-100);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--wine-700);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--wine-800);
-}
-
-/* Base button styles */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+/* Typography utilities */
+@utility font-display { font-family: var(--font-display); }
+@utility nav-link {
+  position: relative;
+  font-size: 0.875rem;
   font-weight: 600;
-  font-size: 0.95rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid transparent;
-  text-decoration: none;
-  font-family: var(--font-sans);
+  &::after { 
+    content: ""; 
+    position: absolute; 
+    left: 0; 
+    right: 100%; 
+    bottom: -0.45rem; 
+    height: 2px; 
+    background: var(--color-primary); 
+    transition: right 220ms ease; 
+  }
+  &:hover::after { right: 0; }
 }
-
-.btn-primary {
-  background-color: var(--wine-700);
-  color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(122, 28, 41, 0.3);
+@utility hero-shade { 
+  background: linear-gradient(90deg, rgba(18, 14, 13, 0.90) 0%, rgba(18, 14, 13, 0.65) 50%, rgba(18, 14, 13, 0.25) 100%); 
 }
-
-.btn-primary:hover {
-  background-color: var(--wine-800);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(122, 28, 41, 0.4);
+@utility eyebrow { 
+  margin-bottom: 0.75rem; 
+  color: var(--color-accent); 
+  font-size: 0.75rem; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  letter-spacing: 0.16em; 
 }
-
-.btn-secondary {
-  background-color: #FFFFFF;
-  color: var(--wine-700);
-  border-color: var(--parchment-200);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-secondary:hover {
-  background-color: var(--parchment-100);
-  border-color: var(--wine-700);
-  color: var(--wine-800);
-  transform: translateY(-2px);
-}
-
-.btn-accent {
-  background-color: var(--basil-600);
-  color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(45, 90, 39, 0.25);
-}
-
-.btn-accent:hover {
-  background-color: var(--basil-700);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(45, 90, 39, 0.35);
-}
-
-.btn-gold {
-  background: linear-gradient(135deg, #D4A373 0%, #B8860B 100%);
-  color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(184, 134, 11, 0.3);
-}
-
-.btn-gold:hover {
-  filter: brightness(1.08);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(184, 134, 11, 0.4);
-}
-
-/* Badge styles */
-.badge-wine {
-  background-color: var(--wine-100);
-  color: var(--wine-700);
-  border: 1px solid rgba(122, 28, 41, 0.2);
-}
-
-.badge-basil {
-  background-color: var(--basil-100);
-  color: var(--basil-700);
-  border: 1px solid rgba(45, 90, 39, 0.2);
-}
-
-.badge-gold {
-  background-color: var(--gold-100);
-  color: #8A6400;
-  border: 1px solid rgba(184, 134, 11, 0.25);
-}
-
-/* Glassmorphism */
-.glass-nav {
-  background: rgba(253, 250, 245, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(223, 213, 196, 0.6);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.animate-fade {
-  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slide-right {
-  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-scale {
-  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Card hover */
-.food-card {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  background: #FFFFFF;
-  border: 1px solid var(--parchment-200);
-  border-radius: 1.25rem;
-  overflow: hidden;
-}
-
-.food-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-xl);
-  border-color: rgba(122, 28, 41, 0.3);
+@utility section-title { 
+  font-family: var(--font-display); 
+  font-size: clamp(2rem, 3.5vw, 3rem); 
+  line-height: 1.16; 
+  font-weight: 700; 
 }
 
 /* Italian Flag Accent Ribbon */
 .italian-ribbon {
   height: 4px;
+  width: 100%;
   background: linear-gradient(90deg, #008C45 0% 33.3%, #F4F5F0 33.3% 66.6%, #CD212A 66.6% 100%);
 }
