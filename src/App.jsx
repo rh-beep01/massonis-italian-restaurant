@@ -25,7 +25,8 @@ import {
   CreditCard, 
   ShieldCheck, 
   Printer, 
-  ExternalLink 
+  ExternalLink,
+  Utensils 
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import Button from './components/ui/Button';
@@ -1902,7 +1903,7 @@ export default function App() {
 
       {/* Floating Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 animate-fade">
+        <div className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-50 animate-fade">
           <div className="bg-[#181514] text-white text-xs sm:text-sm font-semibold py-3 px-4 rounded-xl shadow-2xl flex items-center gap-2 border border-[#2C2725]">
             <CheckCircle2 className="size-4 text-emerald-400" />
             <span>{toastMessage}</span>
@@ -1910,25 +1911,49 @@ export default function App() {
         </div>
       )}
 
-      {/* Sticky Mobile Cart Bar */}
-      {cartItemCount > 0 && !cartOpen && !checkoutOpen && (
-        <div className="fixed bottom-4 left-4 right-4 z-40 sm:hidden animate-fade">
-          <button
-            onClick={() => setCartOpen(true)}
-            className="w-full py-3.5 px-5 rounded-2xl bg-primary text-white font-bold flex items-center justify-between shadow-2xl active:scale-95 transition-transform"
-          >
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-white text-primary flex items-center justify-center text-xs font-black">
-                {cartItemCount}
-              </span>
-              <span>View Order Tray</span>
-            </div>
-            <div className="flex items-center gap-1 font-mono">
-              <span>${subtotal.toFixed(2)}</span>
-              <ArrowRight className="size-4" />
-            </div>
-          </button>
-        </div>
+      {/* Omnipresent Floating Order Now & Cart Dock */}
+      {!cartOpen && !checkoutOpen && !reserveOpen && (
+        <aside aria-label="Quick Ordering Bar" className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center drop-shadow-2xl animate-fade max-w-[calc(100vw-2rem)]">
+          <div className="flex items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-full bg-[#7A1C29] text-white border border-amber-400/40 shadow-2xl backdrop-blur-md transition-all duration-300 hover:shadow-red-950/60 hover:scale-[1.02]">
+            {/* Quick Order Now Button */}
+            <a
+              href="#menu"
+              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold text-white/95 hover:text-white hover:bg-white/15 active:scale-95 transition-all duration-200"
+            >
+              <Utensils className="size-3.5 sm:size-4 text-amber-300 shrink-0" />
+              <span className="whitespace-nowrap">Order Now</span>
+            </a>
+
+            {/* Visual Divider */}
+            <div className="h-5 sm:h-6 w-px bg-white/25 my-auto shrink-0" />
+
+            {/* Quick Cart / Order Tray Trigger */}
+            <button
+              type="button"
+              onClick={() => setCartOpen(true)}
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 ${
+                cartItemCount > 0 
+                  ? 'bg-accent text-white hover:brightness-110 shadow-lg ring-2 ring-amber-300/50' 
+                  : 'text-white/95 hover:text-white hover:bg-white/15'
+              }`}
+            >
+              <div className="relative shrink-0 flex items-center">
+                <ShoppingBag className="size-3.5 sm:size-4" />
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-2.5 -right-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-primary text-[10px] font-black shadow-sm">
+                    {cartItemCount}
+                  </span>
+                )}
+              </div>
+              <span className="whitespace-nowrap">Cart</span>
+              {cartItemCount > 0 && (
+                <span className="font-mono text-xs font-semibold pl-1 border-l border-white/30 whitespace-nowrap">
+                  ${subtotal.toFixed(2)}
+                </span>
+              )}
+            </button>
+          </div>
+        </aside>
       )}
 
     </main>
