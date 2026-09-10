@@ -324,20 +324,45 @@ export default function App() {
   return (
     <main className="min-h-screen w-full overflow-x-hidden bg-background text-foreground selection:bg-accent/30">
       
-      {/* 1. TOP ANNOUNCEMENT BAR */}
+      {/* 1. TOP ANNOUNCEMENT BAR WITH GOOGLE MAPS LINK & GET DIRECTIONS */}
       <div className="bg-[#181514] text-[#E5DDD0] px-4 py-2 text-xs font-medium border-b border-[#2C2725]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <span className="hidden sm:inline-flex items-center gap-1.5 font-semibold text-accent">
-            <Award className="size-3.5" /> Authentic Italian Kitchen • Nottingham, MD
-          </span>
-          <p className="mx-auto sm:mx-0 text-center">
-            <strong>Fresh Handcrafted Pasta, Artisan Pizza &amp; Viral Spaghetti Eggrolls</strong> — Order ahead for fast pickup!
-          </p>
-          <div className="hidden md:inline-flex items-center gap-4 text-xs">
-            <span className="flex items-center gap-1 text-emerald-400 font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Open Today: 11:00 AM – 9:00 PM
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
+          {/* Address & Google Maps Direction Link */}
+          <a
+            href="https://maps.google.com/?q=Massoni's+Italian+Restaurant+8833+Belair+Rd+Nottingham+MD+21236"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-accent hover:text-white transition-colors group shrink-0"
+            title="Open 8833 Belair Rd in Google Maps / Get Directions"
+          >
+            <MapPin className="size-3.5 text-accent group-hover:scale-110 transition-transform shrink-0" />
+            <span className="font-semibold underline decoration-accent/50 underline-offset-2 group-hover:decoration-white">
+              8833 Belair Rd, Nottingham, MD 21236
             </span>
+            <span className="hidden sm:inline-flex items-center gap-0.5 text-[10px] bg-accent/20 text-accent group-hover:bg-accent group-hover:text-white px-2 py-0.5 rounded-full font-bold transition-all ml-1">
+              Get Directions <ExternalLink className="size-2.5 ml-0.5" />
+            </span>
+          </a>
+
+          {/* Center Special Announcement */}
+          <p className="hidden md:block text-center text-xs text-[#E5DDD0]/90 truncate mx-2">
+            <strong className="text-white">Handcrafted Pastas &amp; Viral Spaghetti Eggrolls</strong> — Dine-in, Curbside Pickup &amp; Delivery
+          </p>
+
+          {/* Right Hours & Contact */}
+          <div className="flex items-center gap-3 text-xs shrink-0 ml-auto sm:ml-0">
+            <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+              <span className="hidden sm:inline">Open Today:</span> 11:00 AM – 9:00 PM
+            </span>
+            <a
+              href="tel:4109703700"
+              className="hidden lg:flex items-center gap-1 text-[#E5DDD0] hover:text-white font-mono transition-colors"
+              title="Call Massoni's Restaurant"
+            >
+              <Phone className="size-3 text-accent shrink-0" />
+              <span>(410) 970-3700</span>
+            </a>
           </div>
         </div>
       </div>
@@ -347,62 +372,63 @@ export default function App() {
 
       {/* 2. MAIN STICKY NAVIGATION */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md shadow-xs">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           
           {/* Logo & Branding */}
-          <a href="#top" className="flex items-center gap-3 shrink-0 py-1 group text-decoration-none">
-            <div className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-2xl font-bold shadow-sm group-hover:scale-105 transition-transform">
+          <a href="#top" className="flex items-center gap-2.5 sm:gap-3 shrink-0 py-1 group text-decoration-none">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-xl sm:text-2xl font-bold shadow-sm group-hover:scale-105 transition-transform">
               M
             </div>
             <div className="flex flex-col">
-              <span className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-primary leading-tight">
+              <span className="font-display text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-primary leading-tight">
                 Massoni's
               </span>
-              <span className="text-[10px] tracking-widest uppercase font-semibold text-muted-foreground">
+              <span className="text-[9px] sm:text-[10px] tracking-widest uppercase font-semibold text-muted-foreground">
                 Italian Restaurant &amp; Bar
               </span>
             </div>
           </a>
 
-          {/* Nav Links - Single Line, Centered, Crisp */}
-          <nav className="hidden lg:flex items-center justify-center flex-1 mx-4 gap-6 xl:gap-8 whitespace-nowrap">
-            <a href="#featured-reel" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
+          {/* Nav Links - Shown on xl+ to guarantee zero overflow or cramping */}
+          <nav className="hidden xl:flex items-center justify-center flex-1 mx-4 gap-5 2xl:gap-7 whitespace-nowrap">
+            <a href="#featured-reel" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
               Featured Specialties
             </a>
-            <a href="#signatures" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#signatures" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
               Eggrolls &amp; Signatures
             </a>
-            <a href="#menu" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#menu" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
               Full Menu &amp; Ordering
             </a>
-            <a href="#story" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#story" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
               Our Story
             </a>
-            <a href="#reviews" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#reviews" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
               Reviews
             </a>
-            <a href="#visit" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#visit" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
               Visit &amp; Hours
             </a>
           </nav>
 
-          {/* Right Action Items */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Right Action Items - Robust flex alignment, no wrapping or cropping */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             <a
               href="tel:4109703700"
-              className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full border border-border bg-card hover:border-primary transition-colors text-foreground"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-full border border-border bg-card hover:border-primary transition-colors text-foreground whitespace-nowrap shrink-0"
+              title="Call Massoni's Restaurant"
             >
               <Phone className="size-3.5 text-accent shrink-0" />
-              <span className="font-mono">(410) 970-3700</span>
+              <span className="font-mono hidden md:inline">(410) 970-3700</span>
             </a>
 
             <Button
               variant="outline"
               size="sm"
               onClick={() => { setReserveConfirmed(false); setReserveOpen(true); }}
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs h-10 px-4 font-semibold text-primary hover:bg-primary hover:text-white"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs h-9 sm:h-10 px-3 sm:px-3.5 font-semibold text-primary hover:bg-primary hover:text-white whitespace-nowrap shrink-0"
             >
-              <Calendar className="size-4" />
+              <Calendar className="size-3.5 sm:size-4 shrink-0" />
               <span>Reserve Table</span>
             </Button>
 
@@ -411,23 +437,24 @@ export default function App() {
               variant="default"
               size="sm"
               onClick={() => setCartOpen(true)}
-              className="relative flex items-center gap-2 font-semibold text-xs h-10 px-4 whitespace-nowrap"
+              className="relative flex items-center gap-1.5 sm:gap-2 font-semibold text-xs h-9 sm:h-10 px-3 sm:px-3.5 whitespace-nowrap shrink-0"
             >
-              <ShoppingBag className="size-4" />
-              <span className="hidden sm:inline">Order Tray</span>
+              <ShoppingBag className="size-3.5 sm:size-4 shrink-0" />
+              <span>Order Tray</span>
               {cartItemCount > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-white animate-scale">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-white animate-scale ml-0.5">
                   {cartItemCount}
                 </span>
               )}
             </Button>
 
-            {/* Mobile Nav Toggle */}
+            {/* Mobile / Tablet Nav Toggle */}
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden shrink-0"
+              className="xl:hidden shrink-0 h-9 w-9 sm:h-10 sm:w-10 ml-0.5"
               onClick={() => setMobileNavOpen(!mobileNavOpen)}
+              aria-label="Toggle Navigation Menu"
             >
               {mobileNavOpen ? <X className="size-5" /> : <MenuIcon className="size-5" />}
             </Button>
@@ -435,10 +462,10 @@ export default function App() {
 
         </div>
 
-        {/* Mobile Nav Drawer */}
+        {/* Mobile / Tablet Nav Drawer */}
         {mobileNavOpen && (
-          <nav className="border-t border-border bg-background px-6 py-5 shadow-xl lg:hidden animate-fade">
-            <div className="flex flex-col gap-3.5 text-sm font-semibold">
+          <nav className="border-t border-border bg-background px-6 py-5 shadow-xl xl:hidden animate-fade">
+            <div className="flex flex-col gap-3 text-sm font-semibold">
               <a href="#featured-reel" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-primary">
                 Featured Specialties
               </a>
@@ -446,7 +473,7 @@ export default function App() {
                 Signature Spaghetti Eggrolls
               </a>
               <a href="#menu" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-primary">
-                Full Menu &amp; Takeout
+                Full Menu &amp; Online Ordering
               </a>
               <a href="#story" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-primary">
                 Our Family Heritage
@@ -457,20 +484,32 @@ export default function App() {
               <a href="#visit" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-primary">
                 Hours &amp; Location
               </a>
-              
+
+              {/* Quick Actions inside mobile menu */}
               <div className="pt-3 border-t border-border flex flex-col gap-2.5">
                 <Button
                   onClick={() => { setMobileNavOpen(false); setReserveConfirmed(false); setReserveOpen(true); }}
                   variant="outline"
-                  className="w-full justify-center"
+                  className="w-full justify-center text-xs font-bold text-primary"
                 >
                   <Calendar className="size-4 mr-2" /> Book Table Reservation
                 </Button>
+                
+                <a
+                  href="https://maps.google.com/?q=Massoni's+Italian+Restaurant+8833+Belair+Rd+Nottingham+MD+21236"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 p-2 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:border-accent transition-colors"
+                >
+                  <MapPin className="size-3.5 text-accent" />
+                  <span>8833 Belair Rd, Nottingham MD • Get Directions ↗</span>
+                </a>
+
                 <a
                   href="tel:4109703700"
-                  className="btn btn-secondary w-full justify-center text-xs"
+                  className="flex items-center justify-center gap-2 p-2 rounded-xl bg-muted/60 text-xs font-semibold text-foreground hover:bg-muted transition-colors font-mono"
                 >
-                  <Phone className="size-3.5 mr-2 text-accent" /> Call (410) 970-3700
+                  <Phone className="size-3.5 text-accent" /> Call (410) 970-3700
                 </a>
               </div>
             </div>
