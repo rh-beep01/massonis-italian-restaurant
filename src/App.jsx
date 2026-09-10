@@ -389,70 +389,73 @@ export default function App() {
             </div>
           </a>
 
-          {/* Nav Links - Shown on xl+ to guarantee zero overflow or cramping */}
-          <nav className="hidden xl:flex items-center justify-center flex-1 mx-4 gap-5 2xl:gap-7 whitespace-nowrap">
-            <a href="#featured-reel" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
+          {/* Nav Links - Spans comfortably on desktop/laptop */}
+          <nav className="hidden lg:flex items-center justify-center flex-1 mx-4 gap-5 xl:gap-8 whitespace-nowrap">
+            <a href="#featured-reel" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
               Featured Specialties
             </a>
-            <a href="#signatures" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#signatures" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
               Eggrolls &amp; Signatures
             </a>
-            <a href="#menu" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#menu" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
               Full Menu &amp; Ordering
             </a>
-            <a href="#story" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#story" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
               Our Story
             </a>
-            <a href="#reviews" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#reviews" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
               Reviews
             </a>
-            <a href="#visit" className="nav-link text-xs 2xl:text-sm text-foreground/90 hover:text-primary">
+            <a href="#visit" className="nav-link text-xs xl:text-sm text-foreground/90 hover:text-primary">
               Visit &amp; Hours
             </a>
           </nav>
 
-          {/* Right Action Items - Robust flex alignment, no wrapping or cropping */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Right Action Items: Direct Phone + Compact Cart Button + Mobile Toggle */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Phone Quick Call */}
             <a
               href="tel:4109703700"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-full border border-border bg-card hover:border-primary transition-colors text-foreground whitespace-nowrap shrink-0"
+              className="flex items-center gap-1.5 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-full border border-border bg-card hover:border-primary transition-colors text-foreground whitespace-nowrap shrink-0"
               title="Call Massoni's Restaurant"
             >
               <Phone className="size-3.5 text-accent shrink-0" />
-              <span className="font-mono hidden md:inline">(410) 970-3700</span>
+              <span className="font-mono hidden sm:inline">(410) 970-3700</span>
             </a>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => { setReserveConfirmed(false); setReserveOpen(true); }}
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs h-9 sm:h-10 px-3 sm:px-3.5 font-semibold text-primary hover:bg-primary hover:text-white whitespace-nowrap shrink-0"
-            >
-              <Calendar className="size-3.5 sm:size-4 shrink-0" />
-              <span>Reserve Table</span>
-            </Button>
-
-            {/* Cart Trigger */}
-            <Button
-              variant="default"
-              size="sm"
+            {/* Sleek Header Cart Button */}
+            <button
+              type="button"
               onClick={() => setCartOpen(true)}
-              className="relative flex items-center gap-1.5 sm:gap-2 font-semibold text-xs h-9 sm:h-10 px-3 sm:px-3.5 whitespace-nowrap shrink-0"
+              className={`relative flex items-center justify-center gap-2 h-9 sm:h-10 px-3 sm:px-3.5 rounded-full border text-xs font-bold transition-all duration-200 shrink-0 ${
+                cartItemCount > 0 
+                  ? 'bg-primary text-white border-primary shadow-xs hover:brightness-110' 
+                  : 'bg-card border-border text-foreground hover:border-primary hover:text-primary'
+              }`}
+              title="View Cart / Order Tray"
+              aria-label="Shopping Cart"
             >
-              <ShoppingBag className="size-3.5 sm:size-4 shrink-0" />
-              <span>Order Tray</span>
+              <div className="relative flex items-center">
+                <ShoppingBag className="size-4" />
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-white text-[10px] font-black shadow-xs">
+                    {cartItemCount}
+                  </span>
+                )}
+              </div>
+              <span className="font-semibold hidden sm:inline">Cart</span>
               {cartItemCount > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-white animate-scale ml-0.5">
-                  {cartItemCount}
+                <span className="font-mono font-bold text-xs pl-1 border-l border-white/30 hidden md:inline">
+                  ${subtotal.toFixed(2)}
                 </span>
               )}
-            </Button>
+            </button>
 
             {/* Mobile / Tablet Nav Toggle */}
             <Button
               variant="ghost"
               size="icon"
-              className="xl:hidden shrink-0 h-9 w-9 sm:h-10 sm:w-10 ml-0.5"
+              className="lg:hidden shrink-0 h-9 w-9 sm:h-10 sm:w-10 text-foreground"
               onClick={() => setMobileNavOpen(!mobileNavOpen)}
               aria-label="Toggle Navigation Menu"
             >
@@ -464,7 +467,7 @@ export default function App() {
 
         {/* Mobile / Tablet Nav Drawer */}
         {mobileNavOpen && (
-          <nav className="border-t border-border bg-background px-6 py-5 shadow-xl xl:hidden animate-fade">
+          <nav className="border-t border-border bg-background px-6 py-5 shadow-xl lg:hidden animate-fade">
             <div className="flex flex-col gap-3 text-sm font-semibold">
               <a href="#featured-reel" onClick={() => setMobileNavOpen(false)} className="py-1 hover:text-primary">
                 Featured Specialties
