@@ -101,7 +101,7 @@
   &:hover::after { right: 0; }
 }
 @utility hero-shade { 
-  background: linear-gradient(90deg, rgba(18, 14, 13, 0.90) 0%, rgba(18, 14, 13, 0.65) 50%, rgba(18, 14, 13, 0.25) 100%); 
+  background: linear-gradient(90deg, rgba(14, 11, 10, 0.68) 0%, rgba(14, 11, 10, 0.40) 50%, rgba(14, 11, 10, 0.10) 100%); 
 }
 @utility eyebrow { 
   margin-bottom: 0.75rem; 

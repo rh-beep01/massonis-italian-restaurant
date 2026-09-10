@@ -423,29 +423,25 @@ export default function App() {
               <span className="font-mono hidden sm:inline">(410) 970-3700</span>
             </a>
 
-            {/* Sleek Header Cart Button */}
+            {/* Maroon Header Cart Button */}
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              className={`relative flex items-center justify-center gap-2 h-9 sm:h-10 px-3 sm:px-3.5 rounded-full border text-xs font-bold transition-all duration-200 shrink-0 ${
-                cartItemCount > 0 
-                  ? 'bg-primary text-white border-primary shadow-xs hover:brightness-110' 
-                  : 'bg-card border-border text-foreground hover:border-primary hover:text-primary'
-              }`}
+              className="relative flex items-center justify-center gap-2 h-9 sm:h-10 px-3 sm:px-3.5 rounded-full bg-primary text-white border border-primary hover:bg-[#611420] shadow-xs hover:shadow-md transition-all duration-200 active:scale-95 shrink-0"
               title="View Cart / Order Tray"
               aria-label="Shopping Cart"
             >
               <div className="relative flex items-center">
-                <ShoppingBag className="size-4" />
+                <ShoppingBag className="size-4 text-white" />
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-white text-[10px] font-black shadow-xs">
+                  <span className="absolute -top-2.5 -right-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-white text-[10px] font-black shadow-xs ring-1 ring-white/40 animate-scale">
                     {cartItemCount}
                   </span>
                 )}
               </div>
-              <span className="font-semibold hidden sm:inline">Cart</span>
+              <span className="font-bold text-white text-xs">Cart</span>
               {cartItemCount > 0 && (
-                <span className="font-mono font-bold text-xs pl-1 border-l border-white/30 hidden md:inline">
+                <span className="font-mono font-bold text-xs pl-1.5 border-l border-white/30 text-amber-200 hidden sm:inline">
                   ${subtotal.toFixed(2)}
                 </span>
               )}
@@ -521,23 +517,23 @@ export default function App() {
       </header>
 
       {/* 3. HERO SECTION */}
-      <section id="top" className="relative min-h-[580px] md:min-h-[640px] border-b border-border flex items-center bg-[#151312]">
+      <section id="top" className="relative min-h-[580px] md:min-h-[640px] border-b border-border flex items-center overflow-hidden bg-black/40">
         <img
           src="/hero-banner.jpg"
           alt="Massoni's Italian Restaurant Table Spread and Ambiance"
-          className="absolute inset-0 h-full w-full object-cover opacity-45"
+          className="absolute inset-0 h-full w-full object-cover opacity-90 brightness-95"
         />
         <div className="hero-shade absolute inset-0" />
         
         <div className="relative mx-auto max-w-7xl px-5 py-20 text-white lg:px-8 w-full">
           <div className="max-w-2xl">
-            <span className="eyebrow">Benvenuti a Massoni's • Nottingham, MD</span>
-            <h1 className="font-display text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.12]">
+            <span className="eyebrow drop-shadow-xs">Benvenuti a Massoni's • Nottingham, MD</span>
+            <h1 className="font-display text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.12] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
               Classic Italian Comfort, Built for Seamless Ordering.
             </h1>
-            <p className="mt-5 text-sm sm:text-base leading-relaxed text-zinc-200">
+            <p className="mt-5 text-sm sm:text-base leading-relaxed text-zinc-100 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
               Hand-tossed stone-baked pizzas, slow-simmered San Marzano pasta, our viral 
-              Maryland-famous <strong className="text-white font-semibold">Spaghetti Eggrolls</strong>, and weekly churned homemade gelato. Order online for swift curbside pickup.
+              Maryland-famous <strong className="text-white font-bold">Spaghetti Eggrolls</strong>, and weekly churned homemade gelato. Order online for swift curbside pickup.
             </p>
             
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -1018,18 +1014,18 @@ export default function App() {
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             
-            <div className="relative rounded-3xl overflow-hidden shadow-xl border-4 border-card">
+            <div className="relative rounded-3xl overflow-hidden shadow-xl border-4 border-card group">
               <img
                 src="/hero-banner.jpg"
                 alt="Nicole Massoni & Chuck Michael Family Trattoria Hospitality"
-                className="w-full h-[420px] object-cover"
+                className="w-full h-[440px] object-cover brightness-100 group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="hero-shade absolute inset-0" />
-              <div className="absolute bottom-6 left-6 right-6 text-white">
-                <span className="eyebrow text-accent block">Family Owned &amp; Operated</span>
-                <h3 className="font-display text-2xl font-bold">Nicole Massoni &amp; Chuck Michael</h3>
-                <p className="text-xs text-zinc-300 mt-1">
-                  Dedicated to warmth, quality scratch recipes, and community hospitality.
+              {/* Subtle bottom-only caption gradient so the entire image remains beautifully visible */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent p-6 pt-16 text-white">
+                <span className="text-xs font-bold uppercase tracking-widest text-amber-300 block mb-1 drop-shadow-xs">Family Owned &amp; Operated</span>
+                <h3 className="font-display text-2xl font-bold drop-shadow-sm">Nicole Massoni &amp; Chuck Michael</h3>
+                <p className="text-xs text-white/95 mt-1 leading-relaxed drop-shadow-xs">
+                  Dedicated to warmth, quality scratch recipes, and Baltimore County community hospitality.
                 </p>
               </div>
             </div>
